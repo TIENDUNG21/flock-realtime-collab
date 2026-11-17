@@ -7,7 +7,8 @@
   "type": "module",
   "workspaces": [
     "packages/crdt",
-    "packages/sync"
+    "packages/sync",
+    "apps/server"
   ],
   "engines": {
     "node": ">=22.12"
@@ -20,17 +21,25 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "clean": "tsc -b --clean"
+    "clean": "tsc -b --clean",
+    "server": "tsc -b && node apps/server/dist/main.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
     "@types/node": "^22.20.5",
+    "@types/ws": "^8.18.1",
     "eslint": "^9.39.5",
     "fast-check": "^4.3.0",
     "globals": "^16.4.0",
-    "prettier": "^3.6.2",
+    "prettier": "3.9.10",
     "typescript": "~5.9.3",
-    "typescript-eslint": "^8.46.0",
+    "typescript-eslint": "8.72.1",
+    "vite": "7.3.7",
     "vitest": "^4.1.12"
+  },
+  "overrides": {
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "11.0.3"
+    }
   }
 }

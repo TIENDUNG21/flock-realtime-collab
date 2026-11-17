@@ -1,0 +1,17 @@
+{
+  "name": "@flock/server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "WebSocket relay for Flock rooms with append-only persistence on disk.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/main.js",
+  "scripts": {
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@flock/crdt": "0.1.0",
+    "@flock/sync": "0.1.0",
+    "ws": "8.22.1"
+  }
+}
