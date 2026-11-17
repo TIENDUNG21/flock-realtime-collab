@@ -5,6 +5,8 @@
 [![CI](https://github.com/TIENDUNG21/flock-realtime-collab/actions/workflows/ci.yml/badge.svg)](https://github.com/TIENDUNG21/flock-realtime-collab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2dd4bf)](LICENSE)
 
+<p align="center"><img src="assets/banner.svg" width="100%" alt="Animated diagram: three replicas edit during a network partition and converge when it heals"></p>
+
 Flock is a local-first collaboration engine for plain text and key-value data: a sequence CRDT and
 a last-writer-wins map written from scratch in TypeScript, a sync protocol built on state vectors,
 a WebSocket relay that persists each room to an append-only log, and a browser editor with a shared
