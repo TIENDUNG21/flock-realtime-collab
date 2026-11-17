@@ -38,6 +38,8 @@ interface MessageInfo {
 export type NetworkEvent =
   | ({ readonly type: 'send' | 'deliver' | 'duplicate' } & MessageInfo)
   | ({ readonly type: 'drop'; readonly reason: 'loss' | 'partition' } & MessageInfo)
+  /** A copy of the message is on its way and will arrive (or be dropped) after `delayMs`. */
+  | ({ readonly type: 'transit'; readonly delayMs: number } & MessageInfo)
   | ({ readonly type: 'error'; readonly message: string } & MessageInfo)
   | {
       readonly type: 'link';
@@ -229,6 +231,7 @@ export class SimNetwork {
   #schedule(info: MessageInfo, bytes: Uint8Array, config: LinkConfig): void {
     const delay = config.latencyMs + this.#rng.next() * config.jitterMs;
     this.#inFlight++;
+    this.#events.emit('event', { type: 'transit', delayMs: delay, ...info });
     this.#scheduler.setTimeout(() => {
       this.#inFlight--;
       const time = this.#scheduler.now();

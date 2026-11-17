@@ -131,6 +131,22 @@ describe('SimNetwork', () => {
     expect(text(net, 'B')).toBe('last word');
   });
 
+  it('announces each copy in transit with its delay', () => {
+    const s = new VirtualScheduler();
+    const net = new SimNetwork({ scheduler: s, seed: 5 });
+    net.addPeer('A');
+    net.addPeer('B');
+    const transits: number[] = [];
+    net.on('event', (e) => {
+      if (e.type === 'transit') transits.push(e.delayMs);
+    });
+    net.link('A', 'B', { latencyMs: 100, jitterMs: 50, duplicate: 1 });
+    expect(transits.length).toBeGreaterThan(0);
+    expect(transits.length % 2).toBe(0); // every message duplicated
+    expect(transits.every((d) => d >= 100 && d < 150)).toBe(true);
+    expect(net.inFlight).toBe(transits.length);
+  });
+
   it('describes traffic for the op log', () => {
     const { net, s } = trio();
     const summaries: string[] = [];
