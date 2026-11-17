@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { FORMAT_VERSION } from '@flock/crdt';
+import { UPDATE_FORMAT_VERSION } from '@flock/crdt';
 
 describe('@flock/crdt', () => {
-  it('exposes the binary format version', () => {
-    expect(FORMAT_VERSION).toBe(1);
+  it('exposes the binary update format version', () => {
+    expect(UPDATE_FORMAT_VERSION).toBe(1);
   });
 });

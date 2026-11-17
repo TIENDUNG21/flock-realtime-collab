@@ -1,6 +1,3 @@
-/** Version of the binary update format produced by this package. */
-export const FORMAT_VERSION = 1;
-
 export {
   compareStamps,
   idEquals,
@@ -29,3 +26,14 @@ export {
 } from './ops.js';
 export { TextType, type RelativePosition } from './types/text.js';
 export { MapType } from './types/map.js';
+export { Reader, Writer } from './encoding/buffer.js';
+export { readJson, writeJson } from './encoding/json.js';
+export {
+  decodeStateVector,
+  decodeStateVectorFrom,
+  decodeUpdate,
+  encodeStateVector,
+  encodeUpdate,
+  mergeUpdates,
+  UPDATE_FORMAT_VERSION,
+} from './encoding/update.js';

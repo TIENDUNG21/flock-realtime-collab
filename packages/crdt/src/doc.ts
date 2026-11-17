@@ -1,6 +1,7 @@
 import { LamportClock } from './clock/lamport.js';
 import { VectorClock } from './clock/vector.js';
 import { Emitter } from './emitter.js';
+import { decodeUpdate, encodeUpdate } from './encoding/update.js';
 import { InvalidOpError } from './errors.js';
 import { isValidReplicaId, randomReplicaId, type Id, type ReplicaId } from './id.js';
 import type { Json } from './json.js';
@@ -23,6 +24,8 @@ export const LOCAL_ORIGIN = 'local';
 /** Emitted once per transaction or applied batch with the operations that became part of the doc. */
 export interface UpdateEvent {
   readonly ops: readonly Op[];
+  /** The operations in binary update format (encoded on first access). */
+  readonly update: Uint8Array;
   /** `'local'` (or the value given to `transact`) for local edits; the caller's origin for remote ones. */
   readonly origin: unknown;
   readonly local: boolean;
@@ -240,6 +243,19 @@ export class Doc implements LocalOpSink {
     this.#publish(batch);
   }
 
+  /** Encodes everything not covered by `since` (the full state by default) as one update. */
+  encodeStateAsUpdate(since?: VectorClock): Uint8Array {
+    return encodeUpdate(this.opsSince(since));
+  }
+
+  /**
+   * Decodes and applies a binary update. Throws DecodeError or InvalidOpError without changing
+   * the document when the update is malformed.
+   */
+  applyUpdate(update: Uint8Array, origin: unknown = null): void {
+    this.applyOps(decodeUpdate(update), origin);
+  }
+
   /**
    * Canonical view of the replicated state (types with history, tombstone order, state vector),
    * for tests and debugging. Equal on converged replicas.
@@ -335,7 +351,15 @@ export class Doc implements LocalOpSink {
   #publish(batch: Batch): void {
     if (batch.ops.length === 0) return;
     const { ops, origin, local, targets } = batch;
-    this.#events.emit('update', { ops, origin, local });
+    let encoded: Uint8Array | undefined;
+    this.#events.emit('update', {
+      ops,
+      origin,
+      local,
+      get update(): Uint8Array {
+        return (encoded ??= encodeUpdate(ops));
+      },
+    });
     this.#events.emit('change', { targets, origin, local });
   }
 }
