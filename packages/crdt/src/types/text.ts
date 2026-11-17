@@ -48,25 +48,35 @@ export class TextType {
     if (typeof text !== 'string' || !isWellFormed(text)) {
       throw new TypeError('inserted text must be a string without lone surrogates');
     }
-    const origin = this.#rga.originAt(index);
+    const before = this.#rga.itemBefore(index);
     if (text.length === 0) return;
-    this.#sink.local(codePointCount(text), (id, lamport) => ({
-      kind: 'ins',
-      id,
-      lamport,
-      target: this.name,
-      origin,
-      content: text,
-    }));
+    const count = codePointCount(text);
+    let first: Id | undefined;
+    this.#sink.local(count, (id, lamport) => {
+      first = id;
+      return {
+        kind: 'ins',
+        id,
+        lamport,
+        target: this.name,
+        origin: before ? { replica: before.replica, seq: before.seq } : null,
+        content: text,
+      };
+    });
+    // The new run sits right after `before`: remember its last character for the next edit.
+    const last = first && this.#rga.find({ replica: first.replica, seq: first.seq + count - 1 });
+    if (last) this.#rga.setMarker(last, index + text.length - last.content.length);
   }
 
   delete(index: number, length: number): void {
     if (!Number.isSafeInteger(length) || length < 0) {
       throw new RangeError(`delete length must be a non-negative integer, got ${length}`);
     }
+    const before = this.#rga.itemBefore(index);
     const ranges = this.#rga.rangesAt(index, length);
     if (ranges.length === 0) return;
     this.#sink.local(1, (id, lamport) => ({ kind: 'del', id, lamport, target: this.name, ranges }));
+    this.#rga.setMarker(before, before ? index - before.content.length : 0);
   }
 
   relativePosition(index: number, side: 'left' | 'right' = 'right'): RelativePosition {

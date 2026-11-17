@@ -44,6 +44,12 @@ export class Rga {
   #length = 0;
   #size = 0;
   #text: string | null = '';
+  /**
+   * A visible item and its offset, remembered from the last local edit so that sequential
+   * typing does not walk the list from the head. Any integration clears it; local edits
+   * re-establish it through `setMarker` once they know where they landed.
+   */
+  #marker: { item: Item; offset: number } | null = null;
 
   /** Visible length in UTF-16 code units. */
   get length(): number {
@@ -60,6 +66,7 @@ export class Rga {
   }
 
   integrateInsert(op: InsertOp): void {
+    this.#marker = null;
     const chars = splitCodePoints(op.content);
     let origin: Item = op.origin ? this.#require(op.origin) : this.#head;
     let byReplica = this.#index.get(op.id.replica);
@@ -97,6 +104,7 @@ export class Rga {
 
   /** Tombstones the targeted items. Returns how many became deleted (0 for duplicates). */
   integrateDelete(op: DeleteOp): number {
+    this.#marker = null;
     let count = 0;
     for (const range of op.ranges) {
       const byReplica = this.#index.get(range.replica);
@@ -111,12 +119,6 @@ export class Rga {
     }
     if (count > 0) this.#text = null;
     return count;
-  }
-
-  /** The id to use as origin when inserting at UTF-16 offset `index`. */
-  originAt(index: number): Id | null {
-    const { before } = this.#seek(index);
-    return before ? { replica: before.replica, seq: before.seq } : null;
   }
 
   /** The visible item starting at `index` (null at the end of the text). */
@@ -148,6 +150,11 @@ export class Rga {
       item = item.next;
     }
     return ranges;
+  }
+
+  /** Remembers that visible `item` starts at `offset` (null clears the marker). */
+  setMarker(item: Item | null, offset: number): void {
+    this.#marker = item && !item.deleted ? { item, offset } : null;
   }
 
   /** Visible UTF-16 units before `item`. */
@@ -185,20 +192,51 @@ export class Rga {
     }
   }
 
+  #prevVisible(item: Item): Item | null {
+    for (let cur = item.prev; cur && cur !== this.#head; cur = cur.prev) {
+      if (!cur.deleted) return cur;
+    }
+    return null;
+  }
+
   #seek(index: number): Seek {
     this.#checkRange(index);
-    let before: Item | null = null;
-    let offset = 0;
-    let cur = this.#head.next;
+    const marker = this.#marker;
+    const result =
+      marker && index < marker.offset
+        ? this.#seekBackward(index, marker.item, marker.offset)
+        : this.#seekForward(index, marker?.item ?? this.#head.next, marker?.offset ?? 0);
+    if (result.at) this.#marker = { item: result.at, offset: index };
+    else if (result.before) {
+      this.#marker = { item: result.before, offset: index - result.before.content.length };
+    }
+    return result;
+  }
+
+  /** Walks forward from `start` (visible or null), which begins at visible offset `offset`. */
+  #seekForward(index: number, start: Item | null, offset: number): Seek {
+    let before: Item | null | undefined;
+    let cur = start;
     while (cur) {
       if (!cur.deleted) {
-        if (offset === index) return { before, at: cur };
+        if (offset === index) return { before: before ?? this.#prevVisible(cur), at: cur };
         offset += cur.content.length;
         if (offset > index) throw new RangeError(`position ${index} splits a surrogate pair`);
         before = cur;
       }
       cur = cur.next;
     }
-    return { before, at: null };
+    return { before: before ?? null, at: null };
+  }
+
+  /** Walks backward from visible `from` at offset `offset` to an `index` below it. */
+  #seekBackward(index: number, from: Item, offset: number): Seek {
+    for (let cur = from.prev; cur && cur !== this.#head; cur = cur.prev) {
+      if (cur.deleted) continue;
+      offset -= cur.content.length;
+      if (offset === index) return { before: this.#prevVisible(cur), at: cur };
+      if (offset < index) throw new RangeError(`position ${index} splits a surrogate pair`);
+    }
+    throw new Error('RGA invariant violated: position marker is out of sync');
   }
 }

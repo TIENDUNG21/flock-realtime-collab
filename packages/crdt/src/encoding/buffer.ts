@@ -1,6 +1,6 @@
 import { DecodeError } from '../errors.js';
 
-/** Growable byte buffer with LEB128 varints, zigzag ints, float64 and strict UTF-8 strings. */
+/** Growable byte buffer with LEB128 varints, signed varints, float64 and strict UTF-8 strings. */
 export class Writer {
   #buf = new Uint8Array(64);
   #pos = 0;

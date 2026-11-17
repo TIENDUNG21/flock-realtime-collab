@@ -40,7 +40,7 @@ describe('Writer and Reader', () => {
     expect(w.finish()).toHaveLength(1);
   });
 
-  it('round-trips signed (zigzag) varints, floats and strings', () => {
+  it('round-trips signed varints, floats and strings', () => {
     fc.assert(
       fc.property(fc.maxSafeInteger(), fc.double(), fc.string({ unit: 'binary' }), (i, f, s) => {
         const w = new Writer();
