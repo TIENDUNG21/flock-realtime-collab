@@ -84,6 +84,8 @@ export class Doc implements LocalOpSink {
   readonly #types = new Map<string, SharedType>();
   /** Kind each name is bound to, including names only referenced by buffered operations. */
   readonly #kinds = new Map<string, TypeKind>();
+  /** Names of types that have at least one integrated operation. */
+  readonly #touched = new Set<string>();
   readonly #events = new Emitter<DocEvents>();
   #batch: Batch | null = null;
 
@@ -238,10 +240,13 @@ export class Doc implements LocalOpSink {
     this.#publish(batch);
   }
 
-  /** Canonical view of the full state, for tests and debugging. Equal on converged replicas. */
+  /**
+   * Canonical view of the replicated state (types with history, tombstone order, state vector),
+   * for tests and debugging. Equal on converged replicas.
+   */
   debugState(): Record<string, unknown> {
     const types: Record<string, unknown> = {};
-    for (const name of this.typeNames()) {
+    for (const name of [...this.#touched].sort()) {
       const type = this.#types.get(name);
       if (type?.kind === 'text') {
         types[name] = {
@@ -324,6 +329,7 @@ export class Doc implements LocalOpSink {
     log.push(op);
     batch.ops.push(op);
     batch.targets.add(op.target);
+    this.#touched.add(op.target);
   }
 
   #publish(batch: Batch): void {
