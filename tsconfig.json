@@ -1,4 +1,8 @@
 {
   "files": [],
-  "references": [{ "path": "packages/crdt" }, { "path": "packages/sync" }]
+  "references": [
+    { "path": "packages/crdt" },
+    { "path": "packages/sync" },
+    { "path": "apps/server" }
+  ]
 }
