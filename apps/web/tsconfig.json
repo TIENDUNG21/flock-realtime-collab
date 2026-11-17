@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["vite/client", "node"],
+    "paths": {
+      "@flock/crdt": ["../../packages/crdt/src/index.ts"],
+      "@flock/sync": ["../../packages/sync/src/index.ts"]
+    }
+  },
+  "include": ["src", "test", "vite.config.ts"]
+}

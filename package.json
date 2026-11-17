@@ -8,21 +8,24 @@
   "workspaces": [
     "packages/crdt",
     "packages/sync",
-    "apps/server"
+    "apps/server",
+    "apps/web"
   ],
   "engines": {
     "node": ">=22.12"
   },
   "scripts": {
-    "build": "tsc -b",
-    "typecheck": "tsc -b && tsc -p tsconfig.check.json",
+    "build": "tsc -b && npm run build -w @flock/web",
+    "build:pages": "tsc -b && npm run build:pages -w @flock/web && node scripts/check-pages-base.mjs apps/web/dist /flock-realtime-collab/",
+    "typecheck": "tsc -b && tsc -p tsconfig.check.json && tsc -p apps/web/tsconfig.json",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "clean": "tsc -b --clean",
-    "server": "tsc -b && node apps/server/dist/main.js"
+    "server": "tsc -b && node apps/server/dist/main.js",
+    "dev:web": "npm run dev -w @flock/web",
+    "clean": "tsc -b --clean"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",

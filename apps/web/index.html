@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Flock: a CRDT engine written from scratch, a sync protocol, a WebSocket relay and a collaborative editor. Try the Partition Lab in your browser."
+    />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <title>Flock Realtime Collab</title>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="./index.html"><img src="/logo.svg" alt="" />Flock</a>
+      <nav class="nav" aria-label="Pages">
+        <a href="./index.html" aria-current="page">Overview</a>
+        <a href="./editor.html">Editor</a>
+        <a href="./lab.html">Partition Lab</a>
+      </nav>
+      <div class="spacer"></div>
+      <a class="btn" href="https://github.com/TIENDUNG21/flock-realtime-collab">Source on GitHub</a>
+    </header>
+
+    <main class="landing">
+      <section class="hero">
+        <img class="hero-logo" src="/logo.svg" alt="Flock logo" width="72" height="72" />
+        <h1>Flock Realtime Collab</h1>
+        <p class="tagline">Local-first realtime collaboration. Peers that always converge.</p>
+        <p class="lede">
+          A sequence CRDT and a last-writer-wins map written from scratch in TypeScript, a sync
+          protocol built on state vectors, a WebSocket relay that persists every room to disk, and a
+          collaborative editor with a shared whiteboard and live cursors.
+        </p>
+        <div class="cta">
+          <a class="btn primary" href="./lab.html">Open the Partition Lab</a>
+          <a class="btn" href="https://github.com/TIENDUNG21/flock-realtime-collab#quick-start"
+            >Run the editor locally</a
+          >
+        </div>
+        <p class="note muted">
+          The Partition Lab runs entirely in this page: three peers, a simulated network you can
+          cut, slow down and make lossy. The editor needs the Node server, which you start with one
+          command.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>How it converges</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Every character has an identity</h3>
+            <p>
+              Text is an RGA: each character is an item with a unique id
+              <code>(replica, seq)</code> and a Lamport time, inserted after a known origin.
+              Concurrent inserts at the same spot are ordered by Lamport time, then replica id, so
+              every peer picks the same order. Deletes leave tombstones.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Operations wait for their causes</h3>
+            <p>
+              An operation is applied only after the operations it depends on. Anything that arrives
+              early waits in a buffer; duplicates are recognised by id and ignored. Any delivery
+              order gives the same document.
+            </p>
+          </article>
+          <article class="card">
+            <h3>State vectors, then deltas</h3>
+            <p>
+              Peers exchange state vectors (replica to highest sequence number) and send back only
+              what the other side lacks, in a compact binary format. Periodic anti-entropy repairs
+              messages lost in transit.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Offline is the normal case</h3>
+            <p>
+              Edits made without a connection queue up and replay on reconnect. The editor keeps
+              each room in local storage, and the server appends every update to a checksummed log
+              that survives restarts.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Architecture</h2>
+        <figure class="diagram">
+          <svg viewBox="0 0 880 250" role="img" aria-labelledby="arch-title">
+            <title id="arch-title">
+              Packages: crdt at the bottom, sync on top of it, then the server and the web app.
+            </title>
+            <defs>
+              <marker
+                id="arrow"
+                viewBox="0 0 10 10"
+                refX="9"
+                refY="5"
+                markerWidth="7"
+                markerHeight="7"
+                orient="auto-start-reverse"
+              >
+                <path d="M0 0 L10 5 L0 10 z" fill="#66706d" />
+              </marker>
+            </defs>
+            <g font-family="ui-monospace, Consolas, monospace" font-size="14">
+              <rect
+                x="40"
+                y="170"
+                width="800"
+                height="56"
+                rx="10"
+                fill="#111413"
+                stroke="#2dd4bf"
+              />
+              <text x="60" y="196" fill="#2dd4bf">@flock/crdt</text>
+              <text x="60" y="214" fill="#9aa5a1" font-size="12">
+                RGA text, LWW map, Lamport and vector clocks, binary encoding. Zero dependencies.
+              </text>
+              <rect x="40" y="90" width="800" height="56" rx="10" fill="#111413" stroke="#33403c" />
+              <text x="60" y="116" fill="#ededed">@flock/sync</text>
+              <text x="60" y="134" fill="#9aa5a1" font-size="12">
+                Protocol, SyncSession (outbox, anti-entropy), awareness, network simulator,
+                WebSocket provider.
+              </text>
+              <rect x="40" y="10" width="380" height="56" rx="10" fill="#111413" stroke="#33403c" />
+              <text x="60" y="36" fill="#ededed">apps/server</text>
+              <text x="60" y="54" fill="#9aa5a1" font-size="12">
+                ws relay, rooms, append-only log
+              </text>
+              <rect
+                x="460"
+                y="10"
+                width="380"
+                height="56"
+                rx="10"
+                fill="#111413"
+                stroke="#33403c"
+              />
+              <text x="480" y="36" fill="#ededed">apps/web</text>
+              <text x="480" y="54" fill="#9aa5a1" font-size="12">
+                editor, whiteboard, Partition Lab
+              </text>
+              <line x1="230" y1="66" x2="230" y2="88" stroke="#66706d" marker-end="url(#arrow)" />
+              <line x1="650" y1="66" x2="650" y2="88" stroke="#66706d" marker-end="url(#arrow)" />
+              <line x1="440" y1="146" x2="440" y2="168" stroke="#66706d" marker-end="url(#arrow)" />
+            </g>
+          </svg>
+        </figure>
+      </section>
+
+      <section class="section two-col">
+        <div>
+          <h2>Run it locally</h2>
+          <pre class="code"><code>git clone https://github.com/TIENDUNG21/flock-realtime-collab
+cd flock-realtime-collab
+npm ci
+npm run server     # ws://localhost:5130
+npm run dev:web    # http://localhost:5135/editor.html</code></pre>
+          <p class="muted">
+            Open the editor in two browser windows to see text, shapes and cursors move between
+            them. Stop the server, keep typing, start it again: both sides catch up.
+          </p>
+        </div>
+        <div>
+          <h2>What is tested</h2>
+          <ul class="checks">
+            <li>
+              Property tests: 3 to 5 replicas, random concurrent edits, delivery out of order, late
+              and duplicated; all replicas end identical.
+            </li>
+            <li>Merges are idempotent and commutative.</li>
+            <li>Simulated networks with partitions, loss and duplication always heal.</li>
+            <li>The decoder rejects every truncation and random input with a clear error.</li>
+            <li>
+              A real server with real WebSocket clients: concurrent edits, an offline client,
+              restarts.
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer muted">
+      MIT licensed. Built by
+      <a href="https://github.com/TIENDUNG21">TIENDUNG21</a>.
+    </footer>
+    <script type="module" src="./src/landing.ts"></script>
+  </body>
+</html>
