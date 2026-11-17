@@ -1,6 +1,6 @@
 {
   "name": "@flock/crdt",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Sequence (RGA) and LWW map CRDTs with Lamport/vector clocks and a compact binary delta encoding. Zero runtime dependencies.",
   "license": "MIT",
   "type": "module",

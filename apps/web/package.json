@@ -1,6 +1,6 @@
 {
   "name": "@flock/web",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Flock web app: collaborative editor, whiteboard, live cursors and the Partition Lab.",
   "license": "MIT",
@@ -12,7 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@flock/crdt": "0.1.0",
-    "@flock/sync": "0.1.0"
+    "@flock/crdt": "1.0.0",
+    "@flock/sync": "1.0.0"
   }
 }

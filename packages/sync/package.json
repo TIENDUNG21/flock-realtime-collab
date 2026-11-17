@@ -1,6 +1,6 @@
 {
   "name": "@flock/sync",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Sync protocol for @flock/crdt documents: state vectors, delta exchange, awareness, offline queue, anti-entropy, a network simulator and a WebSocket provider.",
   "license": "MIT",
   "type": "module",
@@ -15,6 +15,6 @@
     "dist"
   ],
   "dependencies": {
-    "@flock/crdt": "0.1.0"
+    "@flock/crdt": "1.0.0"
   }
 }
