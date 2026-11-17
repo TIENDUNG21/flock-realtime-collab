@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Partition Lab: three CRDT peers on a simulated network you can cut, slow down and make lossy. Runs entirely in the browser."
+    />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <title>Flock Partition Lab</title>
+  </head>
+  <body class="lab-page">
+    <header class="topbar">
+      <a class="brand" href="./index.html"><img src="/logo.svg" alt="" />Flock</a>
+      <nav class="nav" aria-label="Pages">
+        <a href="./index.html">Overview</a>
+        <a href="./editor.html">Editor</a>
+        <a href="./lab.html" aria-current="page">Partition Lab</a>
+      </nav>
+      <div class="spacer"></div>
+      <span class="muted small">Runs in this page. No server involved.</span>
+    </header>
+
+    <main class="lab">
+      <section class="lab-head">
+        <div class="status" id="status" role="status" aria-live="polite">
+          <span id="status-pill" class="pill ok">Converged</span>
+          <span id="status-text" class="status-text"></span>
+        </div>
+        <div class="actions">
+          <button id="chaos" class="btn" aria-pressed="false">Chaos typing</button>
+          <button id="split" class="btn">Isolate A</button>
+          <button id="heal" class="btn">Heal network</button>
+          <button id="reset" class="btn">Reset</button>
+        </div>
+      </section>
+
+      <section class="peers" id="peers" aria-label="Peers"></section>
+
+      <section class="bottom">
+        <div class="panel network">
+          <div class="panel-head">
+            <h2>Network</h2>
+            <span class="muted small">Click a link to cut or restore it.</span>
+          </div>
+          <svg
+            id="topology"
+            viewBox="0 0 440 250"
+            role="img"
+            aria-label="Network between peers A, B and C"
+          ></svg>
+          <div id="links" class="links"></div>
+          <p id="stats" class="stats mono"></p>
+        </div>
+        <div class="panel oplog">
+          <div class="panel-head">
+            <h2>Operation log</h2>
+            <label class="small muted"
+              ><input id="show-handshakes" type="checkbox" /> show state-vector handshakes</label
+            >
+          </div>
+          <ol id="log" class="log" aria-live="off"></ol>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./src/lab/lab.ts"></script>
+  </body>
+</html>

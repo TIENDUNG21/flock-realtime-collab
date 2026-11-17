@@ -18,6 +18,7 @@ export default defineConfig({
       input: {
         index: here('index.html'),
         editor: here('editor.html'),
+        lab: here('lab.html'),
       },
     },
   },
