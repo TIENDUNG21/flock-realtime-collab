@@ -22,3 +22,10 @@ export {
   type SimNetworkOptions,
   type SimPeer,
 } from './sim/network.js';
+export {
+  WebSocketProvider,
+  type ProviderStatus,
+  type WebSocketFactory,
+  type WebSocketLike,
+  type WebSocketProviderOptions,
+} from './ws-provider.js';
