@@ -12,3 +12,4 @@ export {
   type AwarenessUpdate,
 } from './awareness.js';
 export { realScheduler, VirtualScheduler, type Scheduler, type TimerHandle } from './scheduler.js';
+export { SyncSession, type SyncSessionOptions } from './session.js';
