@@ -14,3 +14,4 @@ export {
 } from './id.js';
 export { LamportClock } from './clock/lamport.js';
 export { VectorClock, type Ordering } from './clock/vector.js';
+export { LwwMap } from './lww-map.js';
