@@ -1,0 +1,83 @@
+{
+  "date": "2026-11-17",
+  "machine": {
+    "cpu": "Intel(R) Core(TM) i7-14700K",
+    "threads": 28,
+    "memoryGiB": 32,
+    "os": "win32 10.0.22000",
+    "node": "v22.19.0"
+  },
+  "runs": 5,
+  "results": [
+    {
+      "name": "local typing, append (100k keystrokes)",
+      "ops": 100000,
+      "medianMs": 72.0632,
+      "opsPerSec": 1387671
+    },
+    {
+      "name": "local random inserts/deletes (20k on a growing text)",
+      "ops": 20000,
+      "medianMs": 335.2812,
+      "opsPerSec": 59651
+    },
+    {
+      "name": "encode 100k typing ops",
+      "ops": 100000,
+      "medianMs": 14.162499999999909,
+      "opsPerSec": 7060900
+    },
+    {
+      "name": "decode 100k typing ops",
+      "ops": 100000,
+      "medianMs": 3.9945000000002437,
+      "opsPerSec": 25034422
+    },
+    {
+      "name": "apply remote update, 100k typing ops (decode + integrate)",
+      "ops": 100000,
+      "medianMs": 46.877500000000055,
+      "opsPerSec": 2133220
+    },
+    {
+      "name": "merge 2 concurrent branches into a third (20k ops)",
+      "ops": 20000,
+      "medianMs": 8.322400000000016,
+      "opsPerSec": 2403153
+    },
+    {
+      "name": "map set, 100k writes over 1k keys",
+      "ops": 100000,
+      "medianMs": 57.20080000000007,
+      "opsPerSec": 1748227
+    },
+    {
+      "name": "replicate keystrokes A to B through SyncSession (20k)",
+      "ops": 20000,
+      "medianMs": 71.03750000000036,
+      "opsPerSec": 281541
+    }
+  ],
+  "sizes": {
+    "typing": {
+      "ops": 100000,
+      "binaryBytes": 300018,
+      "jsonBytes": 13766657,
+      "bytesPerOp": 3
+    },
+    "randomEdits": {
+      "ops": 20000,
+      "binaryBytes": 120201,
+      "jsonBytes": 2695051,
+      "bytesPerOp": 6.01
+    },
+    "tombstones": {
+      "visibleChars": 50000,
+      "fullStateBytes": 300025
+    },
+    "mergedDoc": {
+      "replicas": 4,
+      "stateVectorBytes": 13
+    }
+  }
+}

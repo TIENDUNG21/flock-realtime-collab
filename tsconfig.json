@@ -1,8 +1,17 @@
 {
   "files": [],
   "references": [
-    { "path": "packages/crdt" },
-    { "path": "packages/sync" },
-    { "path": "apps/server" }
+    {
+      "path": "packages/crdt"
+    },
+    {
+      "path": "packages/sync"
+    },
+    {
+      "path": "apps/server"
+    },
+    {
+      "path": "bench"
+    }
   ]
 }

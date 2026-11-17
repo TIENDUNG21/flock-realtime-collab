@@ -25,6 +25,7 @@
     "test:watch": "vitest",
     "server": "tsc -b && node apps/server/dist/main.js",
     "dev:web": "npm run dev -w @flock/web",
+    "bench": "tsc -b && node bench/dist/run.js",
     "clean": "tsc -b --clean"
   },
   "devDependencies": {
