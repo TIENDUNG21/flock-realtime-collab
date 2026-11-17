@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Flock collaborative editor and whiteboard with live cursors."
+    />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <title>Flock Editor</title>
+  </head>
+  <body class="editor-page">
+    <header class="topbar">
+      <a class="brand" href="./index.html"><img src="/logo.svg" alt="" />Flock</a>
+      <nav class="nav" aria-label="Pages">
+        <a href="./index.html">Overview</a>
+        <a href="./editor.html" aria-current="page">Editor</a>
+        <a href="./lab.html">Partition Lab</a>
+      </nav>
+      <div class="spacer"></div>
+      <label class="inline-field">
+        <span class="muted">Room</span>
+        <input id="room" class="field mono" size="12" spellcheck="false" autocomplete="off" />
+      </label>
+      <label class="inline-field">
+        <span class="muted">You</span>
+        <input id="name" class="field" size="12" autocomplete="off" />
+      </label>
+      <div class="people" aria-live="polite">
+        <div id="people" class="avatars"></div>
+        <span id="people-count" class="muted small"></span>
+      </div>
+      <span id="status" class="pill">Connecting</span>
+    </header>
+
+    <div id="offline-banner" class="banner" hidden>
+      <strong>Working offline.</strong>
+      Edits are saved in this browser and sync as soon as the server at
+      <code id="server-url"></code> is reachable. Start it from the repository with
+      <code>npm run server</code>, or pass <code>?server=ws://host:port</code>.
+    </div>
+    <div id="restored" class="banner subtle" hidden>
+      Restored this room from local storage. Changes made offline merge automatically.
+    </div>
+
+    <main class="workspace">
+      <section class="pane" aria-labelledby="notes-title">
+        <div class="pane-head">
+          <h2 id="notes-title">Notes</h2>
+          <span id="char-count" class="muted small"></span>
+        </div>
+        <div class="editor-wrap">
+          <textarea
+            id="notes"
+            spellcheck="false"
+            placeholder="Start typing. Open this room in another tab or browser to see edits and cursors arrive live."
+            aria-label="Shared notes"
+          ></textarea>
+          <div id="cursor-layer" class="cursor-layer" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="pane" aria-labelledby="board-title">
+        <div class="pane-head">
+          <h2 id="board-title">Board</h2>
+          <div class="toolbar" role="toolbar" aria-label="Drawing tools">
+            <button class="btn tool" data-tool="pen" aria-pressed="true">Pen</button>
+            <button class="btn tool" data-tool="rect" aria-pressed="false">Rectangle</button>
+            <button class="btn tool" data-tool="ellipse" aria-pressed="false">Ellipse</button>
+            <button class="btn tool" data-tool="eraser" aria-pressed="false">Eraser</button>
+            <div id="swatches" class="swatches" aria-label="Colors"></div>
+            <button id="clear-board" class="btn tool">Clear</button>
+          </div>
+        </div>
+        <div class="board-wrap">
+          <canvas id="board" aria-label="Shared whiteboard"></canvas>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./src/editor/main.ts"></script>
+  </body>
+</html>

@@ -17,6 +17,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         index: here('index.html'),
+        editor: here('editor.html'),
       },
     },
   },
