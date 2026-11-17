@@ -63,7 +63,10 @@ export class TextAreaBinding {
     });
     this.#listeners.push(
       doc.on('change', (event) => {
-        if (!event.local && event.targets.has(text.name)) this.#onRemote();
+        // Anything not typed into this textarea (remote edits, programmatic local edits).
+        if (event.targets.has(text.name) && this.#textarea.value !== text.toString()) {
+          this.#onRemote();
+        }
       }),
     );
   }
