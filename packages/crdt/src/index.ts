@@ -37,3 +37,4 @@ export {
   mergeUpdates,
   UPDATE_FORMAT_VERSION,
 } from './encoding/update.js';
+export { Emitter } from './emitter.js';
