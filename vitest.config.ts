@@ -7,6 +7,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@flock/crdt': src('./packages/crdt/src/index.ts'),
+      '@flock/sync': src('./packages/sync/src/index.ts'),
     },
   },
   test: {

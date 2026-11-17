@@ -1,4 +1,4 @@
 {
   "files": [],
-  "references": [{ "path": "packages/crdt" }]
+  "references": [{ "path": "packages/crdt" }, { "path": "packages/sync" }]
 }

@@ -6,7 +6,8 @@
   "license": "MIT",
   "type": "module",
   "workspaces": [
-    "packages/crdt"
+    "packages/crdt",
+    "packages/sync"
   ],
   "engines": {
     "node": ">=22.12"
