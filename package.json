@@ -1,0 +1,35 @@
+{
+  "name": "flock-realtime-collab",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local-first realtime collaboration. Peers that always converge.",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "packages/crdt"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b && tsc -p tsconfig.check.json",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "tsc -b --clean"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@types/node": "^22.20.5",
+    "eslint": "^9.39.5",
+    "fast-check": "^4.3.0",
+    "globals": "^16.4.0",
+    "prettier": "^3.6.2",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.0",
+    "vitest": "^4.1.12"
+  }
+}

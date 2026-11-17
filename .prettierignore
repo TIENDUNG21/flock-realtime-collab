@@ -1,0 +1,7 @@
+dist
+node_modules
+coverage
+.cache
+data
+package-lock.json
+bench/results.json
